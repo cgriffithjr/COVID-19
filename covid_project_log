@@ -1,0 +1,48 @@
+
+GOALS
+
+Improve statistical, data science, and programming skills, especially for
+  Python
+Communicate my skills by maintaining a GitHub site illustrating a data analysis
+  project
+
+Some Specifics
+    Learn to make dashboards
+    Learn to do deep learning
+
+
+THOUGHTS
+
+5/8/2020 -> What do I want to do?
+  Calculate growth rates
+  Calculate doubling time
+  Calculate, plot, model, etc. in both Python and R -> start with R as I'm
+    more fluent in it, but goal is to improve Python skills, especially in
+    modeling
+  Model - methods tbd
+  Create dashboards -> R Shiny and Python Dash
+5/8/2020 -> How to calculate growth rates on a percentage basis
+
+5/8/2002 -> How to calculate a doubling time
+
+ACTIONS
+
+5/8/2020 3pm -> Checked that joining and pivoting data did not create inaccuracies
+  in the data, by comparing the # of cases and deaths per day after the join and
+  pivoting procedures from the Greene County, Ohio data with the cases Changed
+  deaths in the original "wide" datasets.  No errors were found.
+
+  Modified "cgriffith_covid_19.R" plotting function so that both cases and
+  deaths were displayed on the same plot, added a legend and a second y-axis,
+  and made it easier for a user to change the x and y variables.
+
+5/8/2020 -> Modified "cgriffith_covid_19.R" to download the US death data as well
+Joined the cases and death datasets using dplyr. Changed selected Ohio county
+from Franklin to Greene as the much smaller case load in Greene will make
+checking easier.
+
+5/7/2020 -> Created R script "cgriffith_covid_19.R" that loaded US case data, changed the data from
+wide to long format, created separate datasets for Ohio and Franklin county
+Plotted Franklin county cases
+
+5/6/2020 -> Cloned John Hopkins covid-19 database
