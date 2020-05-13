@@ -3,16 +3,31 @@ library(ggplot2)
 library(readr)
 library(lubridate)
 library(tidyr)
+library(purrr)
 
 
 
 
 rm(list = ls())
 path1 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_time_series/"
+path2 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us/"
+list.files(path2)
+
+dailies <- list.files(path2, pattern = "csv$") %>%
+            paste0(path2, .) %>%
+            map_df(read_csv, .id = "source")
+
+glimpse(dailies)
+  
+
 case_ts <- read_csv(paste0(path1, "time_series_covid19_confirmed_US.csv"))
 
 glimpse(case_ts)
 dim(case_ts)
+
+
+daily_ex <- read_csv(paste0(path2, "04-12-2020.csv"))
+glimpse(daily_ex)
 
 deaths_ts <- read_csv(paste0(path1, "time_series_covid19_deaths_US.csv"))
 glimpse(deaths_ts)
