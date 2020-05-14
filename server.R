@@ -2,12 +2,12 @@ library(tidyverse)
 library(lubridate)
 
 
-path1 <-
-  "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_time_series/"
-case_ts <-
-  read_csv(paste0(path1, "time_series_covid19_confirmed_US.csv"))
+path2 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/"
+
+case_ts <-  read_csv(paste0(path2, "time_series_covid19_confirmed_US.csv"))
+
 deaths_ts <-
-  read_csv(paste0(path1, "time_series_covid19_deaths_US.csv"))
+  read_csv(paste0(path2, "time_series_covid19_deaths_US.csv"))
 
 # Function to select data by dates and convert format from wide to long
 pivot_func <-
