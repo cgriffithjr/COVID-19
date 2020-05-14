@@ -9,9 +9,13 @@ library(purrr)
 
 
 rm(list = ls())
-path1 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_time_series/"
-path2 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us/"
-path3 <- "C:/Users/Mark/Documents/COVID-19/docs"
+"C:Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/
+"
+"C:Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/
+"
+path1 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/"
+path2 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/"
+path3 <- "C:/Users/Mark/Documents/COVID-19/docs/"
 list.files(path2)
 # 
 # dailies <- list.files(path2, pattern = "csv$", full.names = T) %>%
@@ -19,21 +23,20 @@ list.files(path2)
 #   map_df(read_csv, .id = "filename") %>%
 #   mutate(date_ = mdy(filename))
 
-dailies <- list.files(path2, pattern = "csv$", full.names = T) %>%
+dailies <- list.files(path1, pattern = "[0-9]{2}-[0-9]{2}-[0-9]{4}.csv$", full.names = T) %>%
   set_names(nm = (basename(.))) %>%  # basename gets the filename
   map_df(read_csv, .id = "filename") %>%
   mutate(date_ = mdy(stringr::str_extract(filename, "[0-9]{2}-[0-9]{2}-[0-9]{4}" )))
 
  
-names(dailies)  
-unique(dailies$date_)
+
+
 glimpse(dailies)
   
 
-case_ts <- read_csv(paste0(path1, "time_series_covid19_confirmed_US.csv"))
+case_ts <- read_csv(paste0(path2, "time_series_covid19_confirmed_US.csv"))
 
 glimpse(case_ts)
-dim(case_ts)
 
 
 # daily_ex <- read_csv(paste0(path2, "04-12-2020.csv"))
@@ -131,3 +134,6 @@ plt2 <- ts_plt_func(oh2, yvar1 = Testing_Rate, yvar2 = Mortality_Rate, ylab1 = "
             titled = "Covid-19 Testing & Mortality Rates in Ohio")
 
 plt1
+plt2
+# ggsave(file = "Ohio_cases_morality_counts_April_May2020.png", plot = plt1, path = path3)
+# ggsave(file = "Ohio_testing_mortality_rates_April_May2020.png", plot = plt2, path = path3)
