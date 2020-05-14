@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lubridate)
 
-
+path1 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/"
 path2 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/"
 
 case_ts <-  read_csv(paste0(path2, "time_series_covid19_confirmed_US.csv"))
@@ -46,6 +46,13 @@ cases_deaths <-
     )
   )
 
+dailies <- list.files(path1, pattern = "[0-9]{2}-[0-9]{2}-[0-9]{4}.csv$", full.names = T) %>%
+  set_names(nm = (basename(.))) %>%  # basename gets the filename
+  map_df(read_csv, .id = "filename") %>%
+  mutate(date_ = mdy(stringr::str_extract(filename, "[0-9]{2}-[0-9]{2}-[0-9]{4}" )))
+
+# glimpse(dailies)
+
 rm(case_ts, deaths_ts, case_pivot, deaths_pivot)
 
 
@@ -54,6 +61,8 @@ oh <- cases_deaths %>%
   filter(date_ >= mdy("4/1/20") & date_ <= mdy("4/30/20"))
 
 function(input, output, session) {
+  
+  
   
   updateSelectInput(session, 
                     "ohio_counties",
@@ -66,5 +75,19 @@ function(input, output, session) {
       ggplot(aes(x = date_, y = cases)) + geom_line() +
       scale_y_continuous() + scale_x_date() + labs(x = "Date", y = "Cases", title = "April 2020")
     
+  })
+  
+  updateSelectInput(session,
+                    "select_state",
+                    choices = unique(dailies$Province_State)
+                    )
+ 
+ 
+  output$state_data_chart <- renderPlot({
+    dailies %>%
+      filter(Province_State  == input$select_state) %>%
+            
+      ggplot(aes(x = date_, y = !!input$select_variable)) +
+      geom_line() 
   })
 }
