@@ -11,12 +11,18 @@ library(purrr)
 rm(list = ls())
 path1 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_time_series/"
 path2 <- "C:/Users/Mark/Documents/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports_us/"
+path3 <- "C:/Users/Mark/Documents/COVID-19/docs"
 list.files(path2)
+# 
+# dailies <- list.files(path2, pattern = "csv$", full.names = T) %>%
+#   set_names(nm = (basename(.) %>% tools::file_path_sans_ext())) %>%
+#   map_df(read_csv, .id = "filename") %>%
+#   mutate(date_ = mdy(filename))
 
 dailies <- list.files(path2, pattern = "csv$", full.names = T) %>%
-  set_names(nm = (basename(.) %>% tools::file_path_sans_ext())) %>%
+  set_names(nm = (basename(.))) %>%  # basename gets the filename
   map_df(read_csv, .id = "filename") %>%
-  mutate(date_ = mdy(filename))
+  mutate(date_ = mdy(stringr::str_extract(filename, "[0-9]{2}-[0-9]{2}-[0-9]{4}" )))
 
  
 names(dailies)  
@@ -88,9 +94,11 @@ oh2 <- dailies %>%
   filter(date_ >= mdy("04-12-2020") & date_ <= mdy("05-05-2020"))
 glimpse(oh2)
 
+captive1 <- "Source: COVID-19 Data Repository by the Center for Systems Science \n and Engineering (CSSE) at Johns Hopkins University, \n https://github.com/CSSEGISandData/COVID-19,
+Accessed May 6, 2020"
 
 ts_plt_func <- function(df, xvar1 = date_, yvar1 = Active, yvar2 = Deaths, xlab = "Date", titled = "Corvid-19 Cases & Deaths in Greene County, OH", 
-                        ylab1 = "Cases", ylab2 = "Deaths", color1 = "blue", color2 = "red"){
+                        ylab1 = "Cases", ylab2 = "Deaths", captive = captive1, color1 = "blue", color2 = "red"){
   xvar1 <- enquo(xvar1)
   yvar1 <- enquo(yvar1)
   yvar2 <- enquo(yvar2)
@@ -114,25 +122,12 @@ ts_plt_func <- function(df, xvar1 = date_, yvar1 = Active, yvar2 = Deaths, xlab 
     scale_x_date() +  scale_y_continuous(name = ylab1, 
                        sec.axis = sec_axis(~ . * reciprocal, name = ylab2)) +
     scale_color_manual(labels = c(ylab2, ylab1), values = c(color2, color1)) +
-    labs(x= xlab, title = titled)
+    labs(x= xlab, title = titled, caption = captive)
   print(plt1)
 } 
 
-ts_plt_func(oh2, titled = "Covid-19 Cases & Deaths in Ohio")
-ts_plt_func(oh2, yvar1 = Testing_Rate, yvar2 = Mortality_Rate, ylab1 = "Testing Rate", ylab2 = "Mortality Rate",
+plt1 <- ts_plt_func(oh2, titled = "Covid-19 Cases & Deaths in Ohio")
+plt2 <- ts_plt_func(oh2, yvar1 = Testing_Rate, yvar2 = Mortality_Rate, ylab1 = "Testing Rate", ylab2 = "Mortality Rate",
             titled = "Covid-19 Testing & Mortality Rates in Ohio")
-
-ts_plt_func2 <- function(df, xlab = "Date", ylab1 = "Cases"){
-  
-  plt1 <- ggplot(df, aes(x = date_, y = cases)) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.7)) +
-    geom_line() +  
-    scale_x_date() +  scale_y_continuous() +   
-    labs(x= xlab, y = ylab1)
-  print(plt1)
-} 
-ts_plt_func2(Greene_april)
-plt1 <- ggplot(Greene_april, aes(x = date_, y = cases)) +
-  geom_line() + scale_x_date() + scale_y_continuous() +
 
 plt1
