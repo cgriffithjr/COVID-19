@@ -4,15 +4,12 @@ library(readr)
 library(lubridate)
 library(tidyr)
 library(purrr)
-
-
+library(here)
+here()
 
 
 rm(list = ls())
-"C:Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/
-"
-"C:Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/
-"
+
 path1 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/"
 path2 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/"
 path3 <- "C:/Users/Mark/Documents/COVID-19/docs/"
@@ -23,7 +20,7 @@ list.files(path2)
 #   map_df(read_csv, .id = "filename") %>%
 #   mutate(date_ = mdy(filename))
 
-dailies <- list.files(path1, pattern = "[0-9]{2}-[0-9]{2}-[0-9]{4}.csv$", full.names = T) %>%
+dailies <- list.files(here("data", "csse_covid_19_data", "csse_covid_19_daily_reports_us"), pattern = "[0-9]{2}-[0-9]{2}-[0-9]{4}.csv$", full.names = T) %>%
   set_names(nm = (basename(.))) %>%  # basename gets the filename
   map_df(read_csv, .id = "filename") %>%
   mutate(date_ = mdy(stringr::str_extract(filename, "[0-9]{2}-[0-9]{2}-[0-9]{4}" )))
@@ -34,26 +31,21 @@ dailies <- list.files(path1, pattern = "[0-9]{2}-[0-9]{2}-[0-9]{4}.csv$", full.n
 glimpse(dailies)
   
 
-case_ts <- read_csv(paste0(path2, "time_series_covid19_confirmed_US.csv"))
+case_ts <- read_csv(here("data", "csse_covid_19_data", "csse_covid_19_time_series","time_series_covid19_confirmed_US.csv"))
 
 glimpse(case_ts)
 
 
-# daily_ex <- read_csv(paste0(path2, "04-12-2020.csv"))
-# glimpse(daily_ex)
-# unique(daily_ex$Last_Update)
-# daily_ex$date_ <- as.Date(daily_ex$Last_Update)
-
-# deaths_ts <- read_csv(paste0(path1, "time_series_covid19_deaths_US.csv"))
+deaths_ts <- read_csv(here("data", "csse_covid_19_data", "csse_covid_19_time_series","time_series_covid19_deaths_US.csv"))
 # glimpse(deaths_ts)
 
-# cases_greene <- case_ts %>%
-#   filter(Province_State == "Ohio" & Admin2 == "Greene")
+cases_greene <- case_ts %>%
+  filter(Province_State == "Ohio" & Admin2 == "Greene")
 
-# deaths_greene <- deaths_ts %>%
-#   filter(Province_State == "Ohio" & Admin2 == "Greene")
+deaths_greene <- deaths_ts %>%
+  filter(Province_State == "Ohio" & Admin2 == "Greene")
 
-# write_csv(cases_greene, "cases_greene.csv")
+write_csv(cases_greene, here("data","cases_greene.csv"))
 # write_csv(deaths_greene, "deaths_greene.csv")
 
 # Function to select data by dates and convert format from wide to long
@@ -135,5 +127,5 @@ plt2 <- ts_plt_func(oh2, yvar1 = Testing_Rate, yvar2 = Mortality_Rate, ylab1 = "
 
 plt1
 plt2
-# ggsave(file = "Ohio_cases_morality_counts_April_May2020.png", plot = plt1, path = path3)
-# ggsave(file = "Ohio_testing_mortality_rates_April_May2020.png", plot = plt2, path = path3)
+ggsave(file = "Ohio_cases_morality_counts_April_May2020.png", plot = plt1, path = here("docs"))
+ggsave(file = "Ohio_testing_mortality_rates_April_May2020.png", plot = plt2, path = here("docs"))

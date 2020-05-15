@@ -1,14 +1,16 @@
 library(tidyverse)
 library(lubridate)
+library(here)
 
-path1 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_daily_reports_us/"
-path2 <- "C:/Users/Mark/Documents/COVID-19/data/csse_covid_19_data/csse_covid_19_time_series/"
+# path1 <- here("data", "csse_covid_19_data", "csse_covid_19_daily_reports_us" )
+# path2 <- here("data", "csse_covid_19_data", "csse_covid_19_time_series")
+captive1 <- "Source: COVID-19 Data Repository by the Center for Systems Science \n and Engineering (CSSE) at Johns Hopkins University, \n https://github.com/CSSEGISandData/COVID-19,
+Accessed May 6, 2020"
 
-case_ts <-  read_csv(paste0(path2, "time_series_covid19_confirmed_US.csv"))
+case_ts <- read_csv(here("data", "csse_covid_19_data", "csse_covid_19_time_series", "time_series_covid19_confirmed_US.csv"))
 
-deaths_ts <-
-  read_csv(paste0(path2, "time_series_covid19_deaths_US.csv"))
 
+deaths_ts <- read_csv(here("data", "csse_covid_19_data", "csse_covid_19_time_series","time_series_covid19_deaths_US.csv" ))
 # Function to select data by dates and convert format from wide to long
 pivot_func <-
   function(df,
@@ -73,7 +75,7 @@ function(input, output, session) {
     oh %>%
       filter(Admin2 == input$ohio_counties) %>% 
       ggplot(aes(x = date_, y = cases)) + geom_line() +
-      scale_y_continuous() + scale_x_date() + labs(x = "Date", y = "Cases", title = "April 2020")
+      scale_y_continuous() + scale_x_date() + labs(x = "Date", y = "Cases", title = "April 2020", caption = captive1)
     
   })
   
@@ -88,6 +90,6 @@ function(input, output, session) {
       filter(Province_State  == input$select_state) %>%
             
       ggplot(aes(x = date_, y = !!input$select_variable)) +
-      geom_line() 
+      geom_line() + labs(x = "Date", caption = captive1)
   })
 }
